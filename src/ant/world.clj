@@ -6,33 +6,26 @@
 
 (import-static java.awt.event.KeyEvent VK_LEFT VK_RIGHT VK_UP VK_DOWN)
 
-(def center [500 500])
+(def screen {:x 1000 :y 1000})
+(def center {:x 500  :y 500 })
+(def ant-size 32)
 
-(defstruct controls :magnification :center :clear)
+(defstruct controls :magnification)
 
 (defn draw-object [g obj controls]
-  (let [
-;    mag (:magnification controls)
-;    sun-center (:center controls)
-;    x-offset (- (:x center) (* mag (:x sun-center)))
-;    y-offset (- (:y center) (* mag (:y sun-center)))
-;    x (+ x-offset (* mag (:x (:position obj))))
-;    y (+ y-offset (* mag (:y (:position obj))))
-;    s (max 2 (* mag (size-by-mass obj)))
-;    half-s (/ s 2)
-;    c (color-by-mass obj)
-    ]
-;    (.setColor g c)
-;    (.fillOval g (- x half-s) (- y half-s) s s)
-    (.setColor g Color/red)
-    (.fillOval g 100 100 500 500)
-    )
-  )
+  (let [mag (:magnification controls)
+        x-offset (- (:x center) (* mag (:x center)))
+        y-offset (- (:y center) (* mag (:y center)))
+        x (+ x-offset (* mag (:x obj)))
+        y (+ y-offset (* mag (:y obj)))
+        width (max 2 (* mag ant-size))
+        half-width (/ width 2)
+        ]
+    (.fillRect g (- x half-width) (- y half-width) width width)))
 
 (defn draw-world [g world controls]
   (doseq [obj world]
-    (draw-object g obj controls)
-    )
+    (draw-object g obj controls))
   (.clearRect g 0 0 1000 20))
 
 (defn update-world [world controls]
@@ -43,12 +36,8 @@
 (defn magnify [factor controls world]
   (dosync
     (let [new-mag (* factor (:magnification @controls))]
-      (alter controls #(assoc % :magnification new-mag))
-      (alter controls #(assoc % :clear true)))))
+      (alter controls #(assoc % :magnification new-mag)))))
 
-(defn reset-screen-state [controls]
-  (dosync 
-    (alter controls #(assoc % :clear false))))
 
 (defn toggle-trail [controls]
   (dosync 
@@ -77,8 +66,8 @@
 (defn handle-key [c world controls]
   (cond
     (quit-key? c) (System/exit 1)
-    (plus-key? c) (magnify 1.1 controls world)
-    (minus-key? c) (magnify 0.9 controls world)
+    (plus-key? c) (magnify 0.5 controls world)
+    (minus-key? c) (magnify 2.0 controls world)
     (space-key? c) (magnify 1.0 controls world)
     (trail-key? c) (toggle-trail controls)
     ))
@@ -86,8 +75,8 @@
 (defn world-panel [frame world controls]
   (proxy [JPanel ActionListener KeyListener] []
     (paintComponent [g]
-      (draw-world g @world @controls)
-      (reset-screen-state controls))
+      (proxy-super paintComponent g)
+      (draw-world g @world @controls))
     (actionPerformed [e]
       (update-world world @controls)
       (.repaint this))
@@ -100,14 +89,13 @@
     (keyTyped [e])))
 
 (defn create-world []
-  '(1))
+  '({:x 500 :y 500} {:x 250 :y 250}))
   ;(ant.world/make))
 
 (defn world-frame []
   (let [controls (ref (struct-map controls 
                                   :magnification 1.0
-                                  :trails false
-                                  :clear false))
+                                  :trails false))
         world (ref (create-world))
         frame (JFrame. "Ant")
         panel (world-panel frame world controls)
