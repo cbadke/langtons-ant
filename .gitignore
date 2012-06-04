@@ -1,0 +1,10 @@
+pom.xml
+*jar
+*swp
+/lib/
+/classes/
+.lein-deps-sum
+.lein-failures
+
+node_modules/
+.sass-cache/
