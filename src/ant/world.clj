@@ -12,25 +12,31 @@
 
 (defstruct controls :magnification)
 
-(defn draw-object [g obj controls]
-  (let [mag (:magnification controls)
-        x-offset (- (:x center) (* mag (:x center)))
-        y-offset (- (:y center) (* mag (:y center)))
-        x (+ x-offset (* mag (:x obj)))
-        y (+ y-offset (* mag (:y obj)))
-        width (max 2 (* mag ant-size))
-        half-width (/ width 2)
-        ]
-    (.fillRect g (- x half-width) (- y half-width) width width)))
+(defn draw-object 
+  ([g obj controls]
+   (draw-object g obj controls Color/black))
+  ([g obj controls color]
+   (let [mag (:magnification controls)
+         width (max 2 (* mag ant-size))
+         half-width (/ width 2)
+         x (* width (:x obj))
+         y (* width (:y obj))]
+     (.setColor g color)
+     (.fillRect g (+ (:x center) x) (+ (:y center) y) width width))))
+
+(defn draw-ant
+  [g ant controls]
+  (draw-object g ant controls Color/red))
 
 (defn draw-world [g world controls]
-  (doseq [obj world]
+  (doseq [obj (:path world)]
     (draw-object g obj controls))
-  (.clearRect g 0 0 1000 20))
+  (draw-ant g (:ant world) controls))
 
 (defn update-world [world controls]
-  (dosync
-    world))
+  world)
+  ;(dosync
+  ;  world))
     ;(alter world #(object/update-all %))))
 
 (defn magnify [factor controls world]
@@ -89,7 +95,7 @@
     (keyTyped [e])))
 
 (defn create-world []
-  '({:x 500 :y 500} {:x 250 :y 250}))
+  {:path '({:x 0 :y 0} {:x 0 :y 1}) :ant { :x 1 :y 1 }})
   ;(ant.world/make))
 
 (defn world-frame []
