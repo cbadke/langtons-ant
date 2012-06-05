@@ -44,11 +44,6 @@
     (let [new-mag (* factor (:magnification @controls))]
       (alter controls #(assoc % :magnification new-mag)))))
 
-
-(defn toggle-trail [controls]
-  (dosync 
-    (alter controls #(assoc % :trails (not (:trails @controls))))))
-
 (defn- quit-key? [c]
   (= \q c)
   )
@@ -65,17 +60,12 @@
   (= \space c)
   )
 
-(defn- trail-key? [c]
-  (= \t c)
-  )
-
 (defn handle-key [c world controls]
   (cond
     (quit-key? c) (System/exit 1)
     (plus-key? c) (magnify 0.5 controls world)
     (minus-key? c) (magnify 2.0 controls world)
     (space-key? c) (magnify 1.0 controls world)
-    (trail-key? c) (toggle-trail controls)
     ))
 
 (defn world-panel [frame world controls]
