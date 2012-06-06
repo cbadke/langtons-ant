@@ -20,4 +20,4 @@ Langton's ant can also be described as a cellular automaton, where most of the g
 the "ant" square has one of eight different colors assigned to encode the combination of black/white state and the 
 current direction of motion of the ant.
 
-![Ant Screen Shot](ant-screen.png "")
+![Ant Screen Shot](https://github.com/cbadke/NDC2012-langtons-ant/raw/master/ant-screen.png "")
