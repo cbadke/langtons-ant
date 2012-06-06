@@ -2,7 +2,8 @@
   (:import (java.awt Color Dimension)
     (javax.swing JPanel JFrame Timer JOptionPane)
     (java.awt.event ActionListener KeyListener))
-  (:use clojure.contrib.import-static))
+  (:use clojure.contrib.import-static)
+  (:use ant.ant))
 
 (import-static java.awt.event.KeyEvent VK_LEFT VK_RIGHT VK_UP VK_DOWN)
 
@@ -33,11 +34,9 @@
     (draw-object g obj controls))
   (draw-ant g (:ant world) controls))
 
-(defn update-world [world controls]
-  world)
-  ;(dosync
-  ;  world))
-    ;(alter world #(object/update-all %))))
+(defn update [world controls]
+  (dosync
+    (alter world #(update-world %))))
 
 (defn magnify [factor controls world]
   (dosync
@@ -74,7 +73,7 @@
       (proxy-super paintComponent g)
       (draw-world g @world @controls))
     (actionPerformed [e]
-      (update-world world @controls)
+      (update world @controls)
       (.repaint this))
     (keyPressed [e]
       (handle-key (.getKeyChar e) world controls)
@@ -85,8 +84,7 @@
     (keyTyped [e])))
 
 (defn create-world []
-  {:path '({:x 0 :y 0} {:x 0 :y 1}) :ant { :x 1 :y 1 }})
-  ;(ant.world/make))
+  (make-world))
 
 (defn world-frame []
   (let [controls (ref (struct-map controls 
