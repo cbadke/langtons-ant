@@ -1,0 +1,57 @@
+
+#ignore thumbnails created by windows
+Thumbs.db
+#ignore vim swap files
+*.swp
+#ignore Generated folder for installer
+src/Server/ServerInstaller/Generated/
+src/Server/PrintServiceInstaller/Generated/
+src/Server/CashoutInstaller/Generated/
+#Ignore files build by Visual Studio
+*.obj
+*.exe
+*.pdb
+*.user
+*.aps
+*.pch
+*.vspscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.cache
+*.ilk
+*.log
+[Bb]in
+[Dd]ebug*/
+*.lib
+*.sbr
+obj/
+[Rr]elease*/
+_ReSharper*/
+*.dotCover
+[Tt]est[Rr]esult*
+*~
+*.~*
+results.xml
+*.dbmdl
+*output.config
+*.crunch*.local.xml
+
+#exceptions to allow nunit binaries
+!lib/nunit/bin
+!lib/nunit/bin/net-1.1/*.exe
+!lib/nunit/bin/net-2.0/*.exe
+!lib/CFNet_Powertools/NetCFSvcUtil.exe
+
+#Ignore config files unless you really need
+#to check in a change
+src/Handset/SalesInterface/App.config
+src/Server/AdministrationWebApp/Web.config
+*svclog
+
+*crunchproject*
+*crunchsolution*
