@@ -7,9 +7,9 @@
 
 (import-static java.awt.event.KeyEvent VK_LEFT VK_RIGHT VK_UP VK_DOWN)
 
-(def screen {:x 1000 :y 1000})
-(def center {:x 500  :y 500 })
-(def ant-size 32)
+(def screen {:x 500 :y 500})
+(def center {:x 250  :y 250 })
+(def ant-size 16)
 
 (defstruct controls :magnification)
 
@@ -79,7 +79,7 @@
       (handle-key (.getKeyChar e) world controls)
       (.repaint this))
     (getPreferredSize []
-      (Dimension. 1000 1000))
+      (Dimension. (screen :x) (screen :y)))
     (keyReleased [e])
     (keyTyped [e])))
 
