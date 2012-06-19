@@ -12,8 +12,8 @@ namespace Renderer
 {
     public partial class WorldViewer : Form
     {
-        const int CENTER = 500;
-        const int SQUARE_SIZE = 32;
+        const int CENTER = 250;
+        const int SQUARE_SIZE = 16;
         double mag = 1.0;
 
         Ant.World world = new Ant.World();
@@ -23,14 +23,14 @@ namespace Renderer
             InitializeComponent();
 
             var t = new Timer();
-            t.Interval = 100;
+            t.Interval = 20;
             t.Tick += UpdateWorld;
             t.Start();
         }
 
         private void UpdateWorld(object sender, EventArgs e)
         {
-            world = world.Step();
+            world = Ant.Engine.Step(world);
             this.Refresh();
         }
 
@@ -38,8 +38,8 @@ namespace Renderer
         {
             base.OnPaint(e);
 
-            world.path.Select(ConvertToWorld).ToList().ForEach((c) => RenderSquare(c, BlockSize(), Color.Black));
-            RenderSquare(ConvertToWorld(world.ant), BlockSize(), Color.Red);
+            world.Path.Select(ConvertToWorld).ToList().ForEach((c) => RenderSquare(c, BlockSize(), Color.Black));
+            RenderSquare(ConvertToWorld(world.Ant), BlockSize(), Color.Red);
         }
 
         private int BlockSize()

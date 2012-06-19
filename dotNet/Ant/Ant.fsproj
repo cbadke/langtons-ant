@@ -41,8 +41,9 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Engine.fs" />
+    <Compile Include="World.fs" />
     <None Include="Script.fsx" />
+    <Compile Include="Engine.fs" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
