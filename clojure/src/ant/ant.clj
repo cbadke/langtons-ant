@@ -25,10 +25,6 @@
   [world coord]
   (contains? (:path world) coord))
 
-(defn is-white?
-  [world coord]
-  (not (is-black? world coord)))
-
 (defn- toggle-ant-square
   [world]
   (let [coord (:ant world)]
@@ -41,9 +37,9 @@
   (let [ant-square (:ant world)
         ant-dir (:direction world)]
     (if
-      (is-white? world ant-square)
-      (assoc world :direction (turn-right ant-dir)) 
-      (assoc world :direction (turn-left ant-dir)))))
+      (is-black? world ant-square)
+      (assoc world :direction (turn-left ant-dir))
+      (assoc world :direction (turn-right ant-dir)))))
 
 (defn- move-ant-forward
   [world]
@@ -62,6 +58,4 @@
 
 (defn update-world
   [world]
-  (move-ant-forward
-    (toggle-ant-square
-      (turn-ant world))))
+  (-> world turn-ant toggle-ant-square move-ant-forward))
