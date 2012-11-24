@@ -18,37 +18,26 @@ module Engine =
             | Direction.Down -> Direction.Left
             | Direction.Left -> Direction.Up
 
-    let turnAnt world =
+    let Step world =
         let newDirection =
             if isBlack(world, world.Ant) then
                 turnLeft world.Direction
             else
                 turnRight world.Direction
-        World(world.Ant, world.Path, newDirection)
-
-    let moveAntForward (world: World) =
         let newX =
-            match world.Direction with
+            match newDirection with
                 | Direction.Left -> world.Ant.x - 1
                 | Direction.Right -> world.Ant.x + 1
                 | _ -> world.Ant.x
         let newY =
-            match world.Direction with
+            match newDirection with
                 | Direction.Up -> world.Ant.y - 1
                 | Direction.Down -> world.Ant.y + 1
                 | _ -> world.Ant.y
-        World(Coord(newX, newY), world.Path, world.Direction)
-
-    let toggleAntSquare world = 
+        let newAnt = Coord(newX, newY)
         let newPath = 
-            if isBlack(world, world.Ant) then 
-                List.filter (fun (x: Coord) -> x.x <> world.Ant.x || x.y <> world.Ant.y) world.Path
+            if isBlack(world, newAnt) then 
+                List.filter (fun (x: Coord) -> x.x <> newAnt.x || x.y <> newAnt.y) world.Path
             else
-                world.Ant :: world.Path
-        World(world.Ant, newPath, world.Direction)
-
-    let Step (world: World) =
-        world
-            |> turnAnt
-            |> toggleAntSquare
-            |> moveAntForward
+                newAnt :: world.Path
+        World(newAnt, newPath, newDirection)
