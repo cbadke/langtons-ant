@@ -16,7 +16,8 @@ namespace Renderer
         const int SQUARE_SIZE = 16;
         double mag = 1.0;
 
-        Ant.World world = new Ant.World();
+        Ant.World newWorld = new Ant.World();
+        Ant.World drawnWorld = new Ant.World();
 
         public WorldViewer()
         {
@@ -30,16 +31,36 @@ namespace Renderer
 
         private void UpdateWorld(object sender, EventArgs e)
         {
-            world = Ant.Engine.Step(world);
-            this.Refresh();
+            newWorld = Ant.Engine.Step(newWorld);
+            PaintSquares();
         }
+            
+        enum Change {
+                NoChange,
+                Add,
+                Remove
+            };
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected void PaintSquares()
         {
-            base.OnPaint(e);
+            var commonSquares = newWorld.Path.Intersect(drawnWorld.Path);
 
-            world.Path.Select(ConvertToWorld).ToList().ForEach((c) => RenderSquare(c, BlockSize(), Color.Black));
-            RenderSquare(ConvertToWorld(world.Ant), BlockSize(), Color.Red);
+            drawnWorld.Path
+                .Where(p => !commonSquares.Contains(p))
+                .Concat( new List<Ant.Coord>{drawnWorld.Ant})
+                .Select(ConvertToWorld)
+                .ToList()
+                .ForEach((c) => RenderSquare(c, BlockSize(), Color.White));
+
+            newWorld.Path
+                .Where(p => !commonSquares.Contains(p))
+                .Select(ConvertToWorld)
+                .ToList()
+                .ForEach((c) => RenderSquare(c, BlockSize(), Color.Black));
+
+            RenderSquare(ConvertToWorld(newWorld.Ant), BlockSize(), Color.Red);
+
+            drawnWorld = newWorld;
         }
 
         private int BlockSize()
@@ -89,6 +110,8 @@ namespace Renderer
                     Application.Exit();
                     break;
             }
+
+            drawnWorld = new Ant.World();
         }
     }
 }
